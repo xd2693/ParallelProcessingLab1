@@ -27,7 +27,7 @@ void fill_args(prefix_sum_args_t *args,
                int n_vals,
                int *inputs,
                int *outputs,
-               int *buffer
+               int *buffer,
                bool spin,
                int (*op)(int, int, int),
                int n_loops,
