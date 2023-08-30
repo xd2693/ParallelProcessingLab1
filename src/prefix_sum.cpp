@@ -87,13 +87,13 @@ void* compute_prefix_sum(void *a)
         my_output = my_input;
         my_input = temp;
 
-        pthread_barrier_wait(&args->barrier);
+        pthread_barrier_wait(args->barrier);
 
     }
 
     if (args->t_id == 0){
         args->output_vals = my_input;
-        buffer = my_output;
+        args->buffer = my_output;
     }
 
 

@@ -69,7 +69,6 @@ int main(int argc, char **argv)
         
         start_threads(threads, opts.n_threads, ps_args, compute_prefix_sum);
         
-
         // Wait for threads to finish
         join_threads(threads, opts.n_threads);
 
