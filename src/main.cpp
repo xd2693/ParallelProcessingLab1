@@ -34,9 +34,9 @@ int main(int argc, char **argv)
     int *input_vals, *output_vals;
     read_file(&opts, &n_vals, &input_vals, &output_vals);
 
-    // buffer array to copy input
-    int *buffer = (int*) malloc(n_vals * sizeof(int));
-    memcpy(buffer, input_vals, n_vals * sizeof(int));
+    // sum_offsets array to store sums of each data block
+    int *sum_offsets = (int*) malloc(opts.n_threads * sizeof(int));
+    
 
     //init barrier
     pthread_barrier_t barrier;
@@ -47,7 +47,7 @@ int main(int argc, char **argv)
     scan_operator = op;
     //scan_operator = add;
 
-    fill_args(ps_args, opts.n_threads, n_vals, input_vals, output_vals, buffer,
+    fill_args(ps_args, opts.n_threads, n_vals, input_vals, output_vals, sum_offsets,
         opts.spin, scan_operator, opts.n_loops, &barrier);
     
 
@@ -67,6 +67,7 @@ int main(int argc, char **argv)
     }
     else {
         
+        output_vals[0] = input_vals[0];
         start_threads(threads, opts.n_threads, ps_args, compute_prefix_sum);
         
         // Wait for threads to finish
@@ -84,10 +85,10 @@ int main(int argc, char **argv)
     // Write output data
     write_file(&opts, &(ps_args[0]));
 
-    // Free other buffers
+    // Free other sum_offsetss
     free(threads);
     free(ps_args);
-    free(buffer);
+    free(sum_offsets);
 
     pthread_barrier_destroy(&barrier);
 }
