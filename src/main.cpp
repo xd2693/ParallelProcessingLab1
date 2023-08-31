@@ -66,8 +66,8 @@ int main(int argc, char **argv)
         }
     }
     else {
+
         
-        output_vals[0] = input_vals[0];
         start_threads(threads, opts.n_threads, ps_args, compute_prefix_sum);
         
         // Wait for threads to finish

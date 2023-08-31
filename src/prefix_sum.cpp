@@ -16,22 +16,28 @@ void* compute_prefix_sum(void *a)
     int t_id = args->t_id;
     int n_threads = args->n_threads;
     int n_vals = args->n_vals;
-    int sum=0;
+    int loop = args->n_loops;
+    int (*op)(int, int, int) = args->op;
+    int sum = 0;
+    int work_perthread = n_vals / (n_threads+1); //devide input data into threads+1 data blocks
 
-    for(int i = t_id * n_vals / (n_threads+1); i < (t_id+1) * n_vals / (n_threads+1); i++)
+    //Calculate and store the prefix sum in every data block except last data block
+    for(int i = t_id * work_perthread; i < (t_id+1) * work_perthread; i++)
     {
-        sum+= input[i];
+        sum = op(input[i], sum, loop);
         output[i] = sum;
     }
+    //store total sum of data block in sum_offsets
     sum_offsets[t_id] = sum;
     sum = 0;
 
     pthread_barrier_wait(args->barrier);
 
+    //accumulate and store sums in sum_offsets
     if(t_id==0){
        for(int i = 0; i < n_threads; i++)
        {
-            sum+= sum_offsets[i];
+            sum = op(sum, sum_offsets[i], loop);
             sum_offsets[i] = sum;
        } 
        
@@ -39,20 +45,23 @@ void* compute_prefix_sum(void *a)
 
     pthread_barrier_wait(args->barrier);
 
-    if(t_id<n_threads-1){
-        for(int i = (t_id + 1) * n_vals / (n_threads+1); i < (t_id+2) * n_vals / (n_threads+1); i++)
+    //for threads 0 through n_threads-2, add the sum from sum_offsets to output starting
+    //from second data block, last thread needs to calculate accumulated sum 
+    if(t_id < n_threads-1){
+        for(int i = (t_id + 1) * work_perthread; i < (t_id+2) * work_perthread; i++)
         {            
-            output[i]+=sum_offsets[t_id];
+            output[i] = op(output[i], sum_offsets[t_id], loop);
         }
     }
     else{
         sum = sum_offsets[t_id];
-        for(int i = (t_id + 1) * n_vals / (n_threads+1); i < n_vals; i++)
+        for(int i = (t_id + 1) * work_perthread; i < n_vals; i++)
         {
-            sum+= input[i];
+            sum = op(sum, input[i], loop);
             output[i] = sum;
         }
     }
     
+    return 0;
 
 }

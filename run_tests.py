@@ -23,10 +23,13 @@ for inp in INPUTS:
                 outputName, thr, inp, loop)
             out = check_output(cmd, shell=True).decode("ascii")
             m = re.search("time: (.*)", out)
-            print(out)
+            //print(out)
             if m is not None:
                 time = m.group(1)
                 csv.append(time)
+            compareName= "results/result_%s_t0.txt" % inputSize
+            cmd = "diff {} {}".format(compareName,outputName)
+            out = check_output(cmd, shell=True).decode("ascii")
 
         csvs.append(csv)
         sleep(0.5)
