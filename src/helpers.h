@@ -8,7 +8,7 @@
 struct prefix_sum_args_t {
   int*               input_vals;
   int*               output_vals;
-  int*               buffer;
+  int*               sum_offsets;
   bool               spin;
   int                n_vals;
   int                n_threads;
@@ -27,7 +27,7 @@ void fill_args(prefix_sum_args_t *args,
                int n_vals,
                int *inputs,
                int *outputs,
-               int *buffer,
+               int *sum_offsets,
                bool spin,
                int (*op)(int, int, int),
                int n_loops,

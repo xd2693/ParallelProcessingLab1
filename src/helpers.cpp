@@ -17,13 +17,13 @@ void fill_args(prefix_sum_args_t *args,
                int n_vals,
                int *inputs,
                int *outputs,
-               int *buffer,
+               int *sum_offsets,
                bool spin,
                int (*op)(int, int, int),
                int n_loops,
                pthread_barrier_t *barrier) {
     for (int i = 0; i < n_threads; ++i) {
-        args[i] = {inputs, outputs, buffer, spin, n_vals,
+        args[i] = {inputs, outputs, sum_offsets, spin, n_vals,
                    n_threads, i, op, n_loops, barrier};
     }
 }
