@@ -46,7 +46,7 @@ void* compute_prefix_sum(void *a)
     pthread_barrier_wait(args->barrier);
 
     //for threads 0 through n_threads-2, add the sum from sum_offsets to output starting
-    //from second data block, last thread needs to calculate accumulated sum 
+    //from second data block, last thread needs to calculate accumulated sum for last block
     if(t_id < n_threads-1){
         for(int i = (t_id + 1) * work_perthread; i < (t_id+2) * work_perthread; i++)
         {            
