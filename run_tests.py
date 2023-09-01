@@ -4,12 +4,14 @@ from subprocess import check_output
 import re
 from time import sleep
 
+import matplotlib.pyplot as plt
+
 #
 #  Feel free (a.k.a. you have to) to modify this to instrument your code
 #
 
 THREADS = [0,1,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32]
-LOOPS = [1, 100000]
+LOOPS = [100000]
 INPUTS = ["seq_64_test.txt","1k.txt","8k.txt","16k.txt"]
 
 csvs = []
@@ -42,3 +44,10 @@ print(", ".join(header))
 for csv in csvs:
     print (", ".join(csv))
 
+for csv in csvs:
+    plt.plot(THREADS,csv[1:],label=csv[0])
+
+plt.xlabel("Number of threads")
+plt.ylabel("Run time")
+plt.legend()
+plt.show()
