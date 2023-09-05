@@ -3,6 +3,7 @@
 
 #include <pthread.h>
 #include <iostream>
+#include <atomic>
 
 class spin_barrier {
   

@@ -38,17 +38,27 @@ int main(int argc, char **argv)
     int *sum_offsets = (int*) malloc(opts.n_threads * sizeof(int));
     
 
-    //init barrier
-    pthread_barrier_t barrier;
-    pthread_barrier_init(&barrier, NULL, opts.n_threads);
+    
 
     //"op" is the operator you have to use, but you can use "add" to test
     int (*scan_operator)(int, int, int);
     scan_operator = op;
     //scan_operator = add;
 
-    fill_args(ps_args, opts.n_threads, n_vals, input_vals, output_vals, sum_offsets,
-        opts.spin, scan_operator, opts.n_loops, &barrier);
+    if (opts.spin){
+        my_barrier my_barrier(opts.n_threads);
+        fill_args(ps_args, opts.n_threads, n_vals, input_vals, output_vals, sum_offsets,
+            opts.spin, scan_operator, opts.n_loops, NULL, &my_barrier);
+    }
+    else{
+        //init barrier
+        pthread_barrier_t barrier;
+        pthread_barrier_init(&barrier, NULL, opts.n_threads);
+        fill_args(ps_args, opts.n_threads, n_vals, input_vals, output_vals, sum_offsets,
+            opts.spin, scan_operator, opts.n_loops, &barrier, NULL);
+    }
+
+    
     
 
 

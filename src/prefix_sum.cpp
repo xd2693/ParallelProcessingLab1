@@ -31,7 +31,13 @@ void* compute_prefix_sum(void *a)
     sum_offsets[t_id] = sum;
     sum = 0;
 
-    pthread_barrier_wait(args->barrier);
+    if(args->spin){
+        args->counter_barrier.my_barrier_wait();
+    }
+    else{
+        pthread_barrier_wait(args->barrier);
+    }
+
 
     //accumulate and store sums in sum_offsets
     if(t_id==0){
@@ -43,7 +49,12 @@ void* compute_prefix_sum(void *a)
        
     } 
 
-    pthread_barrier_wait(args->barrier);
+    if(args->spin){
+        args->counter_barrier.my_barrier_wait();
+    }
+    else{
+        pthread_barrier_wait(args->barrier);
+    }
 
     //for threads 0 through n_threads-2, add the sum from sum_offsets to output starting
     //from second data block, last thread needs to calculate accumulated sum for last block
