@@ -5,6 +5,7 @@
 #include <pthread.h>
 #include <my_barrier.h>
 
+
 struct prefix_sum_args_t {
   int*               input_vals;
   int*               output_vals;

@@ -1,6 +1,7 @@
 #include "prefix_sum.h"
 #include "helpers.h"
 
+
 void* compute_prefix_sum(void *a)
 {
     prefix_sum_args_t *args = (prefix_sum_args_t *)a;
@@ -31,8 +32,11 @@ void* compute_prefix_sum(void *a)
     sum_offsets[t_id] = sum;
     sum = 0;
 
+    //printf("spin %d", args->spin);
+
     if(args->spin){
-        args->counter_barrier.my_barrier_wait();
+        args->counter_barrier->my_barrier_wait();
+        //printf("in my barrier");
     }
     else{
         pthread_barrier_wait(args->barrier);
@@ -50,7 +54,7 @@ void* compute_prefix_sum(void *a)
     } 
 
     if(args->spin){
-        args->counter_barrier.my_barrier_wait();
+        args->counter_barrier->my_barrier_wait();
     }
     else{
         pthread_barrier_wait(args->barrier);

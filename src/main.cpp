@@ -7,6 +7,7 @@
 #include "operators.h"
 #include "helpers.h"
 #include "prefix_sum.h"
+#include "my_barrier.h"
 
 using namespace std;
 
@@ -45,14 +46,15 @@ int main(int argc, char **argv)
     scan_operator = op;
     //scan_operator = add;
 
+    //init barrier
+    pthread_barrier_t barrier;
+    my_barrier counter_barrier;
     if (opts.spin){
-        my_barrier my_barrier(opts.n_threads);
+        counter_barrier.init(opts.n_threads);
         fill_args(ps_args, opts.n_threads, n_vals, input_vals, output_vals, sum_offsets,
-            opts.spin, scan_operator, opts.n_loops, NULL, &my_barrier);
+            opts.spin, scan_operator, opts.n_loops, NULL, &counter_barrier);
     }
     else{
-        //init barrier
-        pthread_barrier_t barrier;
         pthread_barrier_init(&barrier, NULL, opts.n_threads);
         fill_args(ps_args, opts.n_threads, n_vals, input_vals, output_vals, sum_offsets,
             opts.spin, scan_operator, opts.n_loops, &barrier, NULL);
@@ -99,7 +101,7 @@ int main(int argc, char **argv)
     free(threads);
     free(ps_args);
     free(sum_offsets);
-
-    pthread_barrier_destroy(&barrier);
+    if (!opts.spin)
+        pthread_barrier_destroy(&barrier);
 }
 
