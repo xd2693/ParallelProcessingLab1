@@ -2,7 +2,7 @@
 
 #include <stdlib.h>
 #include <pthread.h>
-#include <spin_barrier.h>
+#include <my_barrier.h>
 #include <iostream>
 
 
