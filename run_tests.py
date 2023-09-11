@@ -9,11 +9,10 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 #
-#  Feel free (a.k.a. you have to) to modify this to instrument your code
-#
+# Before running, a dir named results has to be manually created to save output files.
+# 
 
 THREADS = [0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32]
-#THREADS = [0]
 LOOPS = [10]
 INPUTS = ["8k.txt"]
 
@@ -23,6 +22,7 @@ for inp in INPUTS:
         csv = ["{}/{}".format(inp, loop)]
         for thr in THREADS:
             inputSize = inp.split(".")[0]
+            #save the output in txt files. 
             outputName = "results/result_%s_t%d.txt" % (inputSize, thr)
             cmd = "./bin/prefix_scan -o {} -n {} -i tests/{} -l {} -s".format(
                 outputName, thr, inp, loop)
@@ -47,7 +47,7 @@ print(", ".join(header))
 for csv in csvs:
     print (", ".join(csv))
 
-
+#plot and save
 plt.ticklabel_format(style='sci',scilimits=(0,0),axis='y')
 for csv in csvs:
     plt.plot(THREADS, list(map(int,csv[1:])), 'o-', label = csv[0])

@@ -32,11 +32,10 @@ void* compute_prefix_sum(void *a)
     sum_offsets[t_id] = sum;
     sum = 0;
 
-    //printf("spin %d", args->spin);
+    
 
     if(args->spin){
-        args->counter_barrier->my_barrier_wait();
-        //printf("in my barrier");
+        args->counter_barrier->my_barrier_wait();   
     }
     else{
         pthread_barrier_wait(args->barrier);

@@ -2,8 +2,7 @@
 
 
 /************************
- * Your code here...    *
- * or wherever you like *
+ *Atomic Counter Barrier*
  ************************/
 
 
